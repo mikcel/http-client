@@ -26,7 +26,7 @@ class SocketClient(object):
         if self.socket:
             self.socket.close()
 
-    def send_cmd(self, method, doc_path, http_version="1.0"):
+    def send_cmd(self, method, doc_path, query="", params="", http_version="1.0"):
 
         if type(method) is not str or method.upper() not in ("GET", "POST"):
             print("Invalid method for library. Only GET and POST accepted.")
@@ -41,10 +41,13 @@ class SocketClient(object):
             print("Incorrect HTTP Version.")
             return False
 
+        complete_uri = "%s?%s" % (doc_path, query)
+
         self.last_send_command = "%s %s HTTP/%s" \
                                  "\r\nHost:%s" \
-                                 "\r\n\r\n" % (method, doc_path, str(http_version), self.host)
+                                 "\r\n\r\n" % (method, complete_uri, str(http_version), self.host)
 
+        print("======== REQUEST ========")
         print(self.last_send_command)
 
         self.socket.sendall(self.last_send_command.encode("utf-8"))

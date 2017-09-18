@@ -17,7 +17,7 @@ def get(url):
 
     socket_clt = SocketClient(host, port)
 
-    request_sent = socket_clt.send_cmd("GET", parsed_url.path)
+    request_sent = socket_clt.send_cmd("GET", parsed_url.path, params=parsed_url.params, query=parsed_url.query)
     if not request_sent:
         print("Request not sent")
     else:
@@ -29,8 +29,12 @@ def parse_url(url):
         print("Invalid URL")
         return None
 
+    if not url.startswith("http") or url.startswith("https"):
+        print("Invalid URL. Only HTTP request.")
+        return None
+
     try:
-        return urlparse(url, scheme="http")
+        return urlparse(url)
     except ValueError:
         print("Invalid URL. Expected: scheme://host:port/path;parameters?query")
         return None
