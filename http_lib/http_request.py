@@ -1,14 +1,14 @@
+import json
 from urllib.parse import urlparse
 
 
 class HTTPRequest:
-    def __init__(self, url, method, headers=None, params=None, http_version="1.0"):
+    def __init__(self, url, method, headers=None, params=None):
 
         self.url = url
         self.method = method
         self.port = 80
         self.headers = headers
-        self.http_version = http_version
         self.params = params
 
         self.host = ""
@@ -50,16 +50,11 @@ class HTTPRequest:
         if type(self.method) is not str or self.method.upper() not in ("GET", "POST"):
             raise ValueError("Invalid method for library. Only GET and POST accepted.")
 
-        try:
-            float(self.http_version)
-        except ValueError:
-            raise ValueError("Incorrect HTTP Version.")
-
         if self.headers is not None and type(self.headers) is not dict:
             raise ValueError("Incorrect data type for headers. Dict expected")
 
-        if self.params is not None and type(self.headers) is not str:
-            raise ValueError("Incorrect data type for parameters. Str expected")
+        if self.params is not None and type(self.params) is not str:
+            raise ValueError("Incorrect data type for parameters. String expected")
 
     def format_request(self):
 
@@ -67,19 +62,16 @@ class HTTPRequest:
         if self.method.upper() == "GET":
             complete_uri = "%s?%s" % (self.doc_path, self.query)
 
-        request_line = "%s %s HTTP/%s" % (self.method, complete_uri, str(self.http_version))
+        request_line = "%s %s HTTP/1.0" % (self.method, complete_uri)
 
         header_lines = "Host: %s\r\n" % self.host
         if self.headers is not None:
             for header, header_value in self.headers.items():
                 header_lines += "%s: %s\r\n" % (header, header_value)
 
-        body_params = ""
-        if self.method.upper() == "POST":
-            body_params = self.params
-
         formatted_request = "%s" \
                             "\r\n%s" \
-                            "\r\n%s" % (request_line, header_lines, body_params)
+                            "Connection: close\r\n" \
+                            "\r\n" % (request_line, header_lines)
 
         return formatted_request

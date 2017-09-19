@@ -41,10 +41,11 @@ class SocketClient(object):
 
         self.last_sent_command = self.request.format_request()
 
-        print("======== REQUEST ========")
-        print(self.last_sent_command)
-
         self.socket.sendall(self.last_sent_command.encode("utf-8"))
+
+        if self.request.method.upper() == "POST":
+            self.socket.sendall(self.request.params.encode('utf-8'))
+
         return self.get_server_response()
 
     def get_server_response(self):
