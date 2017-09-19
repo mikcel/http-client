@@ -1,13 +1,22 @@
 import socket
+from http_lib.http_response import HTTPResponse
+from http_lib.http_request import HTTPRequest
 
 
 class SocketClient(object):
-    def __init__(self, host, port=80, timeout=2):
-        self.host = host
-        self.port = port
+    def __init__(self, request, timeout=2):
+
+        if type(request) is not HTTPRequest:
+            raise ValueError("Request obj is not correct")
+        self.request = request
+
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.settimeout(timeout)
-        self.last_send_command = ""
+        try:
+            self.socket.settimeout(int(timeout))
+        except ValueError:
+            raise
+
+        self.last_sent_command = ""
 
         self.connect_socket()
 
@@ -16,7 +25,9 @@ class SocketClient(object):
 
     def connect_socket(self):
         try:
-            self.socket.connect((self.host, self.port))
+            self.socket.connect((self.request.host, self.request.port))
+        except socket.gaierror:
+            print("Socket connection could not be established")
         except socket.timeout:
             print("Socket connection timed out")
         except InterruptedError:
@@ -26,33 +37,15 @@ class SocketClient(object):
         if self.socket:
             self.socket.close()
 
-    def send_cmd(self, method, doc_path, query="", params="", http_version="1.0"):
+    def send_request(self):
 
-        if type(method) is not str or method.upper() not in ("GET", "POST"):
-            print("Invalid method for library. Only GET and POST accepted.")
-            return False
-        elif type(doc_path) is not str:
-            print("Document path is not of the correct data type. String expected")
-            return False
-
-        try:
-            float(http_version)
-        except ValueError:
-            print("Incorrect HTTP Version.")
-            return False
-
-        complete_uri = "%s?%s" % (doc_path, query)
-
-        self.last_send_command = "%s %s HTTP/%s" \
-                                 "\r\nHost:%s" \
-                                 "\r\n\r\n" % (method, complete_uri, str(http_version), self.host)
+        self.last_sent_command = self.request.format_request()
 
         print("======== REQUEST ========")
-        print(self.last_send_command)
+        print(self.last_sent_command)
 
-        self.socket.sendall(self.last_send_command.encode("utf-8"))
-
-        return True
+        self.socket.sendall(self.last_sent_command.encode("utf-8"))
+        return self.get_server_response()
 
     def get_server_response(self):
 
@@ -60,7 +53,7 @@ class SocketClient(object):
         while True:
 
             try:
-                returned_data = self.socket.recv(len(self.last_send_command), socket.MSG_WAITALL)
+                returned_data = self.socket.recv(len(self.last_sent_command), socket.MSG_WAITALL)
             except socket.timeout:
                 print("Unable to read response from host. Timed out.")
                 return None
@@ -70,4 +63,5 @@ class SocketClient(object):
             else:
                 response.append(returned_data.decode("utf-8"))
 
-        return ''.join(response)
+        response_obj = HTTPResponse(''.join(response))
+        return response_obj

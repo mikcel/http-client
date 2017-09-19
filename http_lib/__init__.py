@@ -1,40 +1,16 @@
 from http_lib.socket_client import SocketClient
-from urllib.parse import urlparse
+from http_lib.http_request import HTTPRequest
 
 
-def get(url):
-    parsed_url = parse_url(url)
-    if parsed_url is None:
-        print("Request not sent")
-        return
+def get(url, headers=None):
 
-    netloc_info = parsed_url.netloc.split(":")
-    host = netloc_info[0]
-    try:
-        port = netloc_info[1]
-    except IndexError:
-        port = 80
+    request = HTTPRequest(url=url, method="GET", headers=headers)
 
-    socket_clt = SocketClient(host, port)
+    socket_clt = SocketClient(request)
 
-    request_sent = socket_clt.send_cmd("GET", parsed_url.path, params=parsed_url.params, query=parsed_url.query)
-    if not request_sent:
+    response = socket_clt.send_request()
+
+    if not response:
         print("Request not sent")
     else:
-        return socket_clt.get_server_response()
-
-
-def parse_url(url):
-    if url is None or len(url) == 0:
-        print("Invalid URL")
-        return None
-
-    if not url.startswith("http") or url.startswith("https"):
-        print("Invalid URL. Only HTTP request.")
-        return None
-
-    try:
-        return urlparse(url)
-    except ValueError:
-        print("Invalid URL. Expected: scheme://host:port/path;parameters?query")
-        return None
+        return response
