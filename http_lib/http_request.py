@@ -1,13 +1,34 @@
-import json
+"""
+http_request.py
+Script containing HTTPRequest class. It represents a an HTTP request that will be sent to a server through
+TCP sockets.
+"""
+
+__author__ = "Celine Mikiel Yohann"
+__id__ = "40009948"
+
 from urllib.parse import urlparse
 
 
 class HTTPRequest:
+    """
+    Class representing an HTTP Request with the url, method, headers and params if necessary.
+    """
+
     def __init__(self, url, method, headers=None, params=None):
+
+        """
+        Constructor. Takes a complete url, request method, headers and params if applicable.
+        From these info, the parse_result method will be called to organize the info.
+        :param url: Complete url to send request to
+        :param method: Request method
+        :param headers: Request headers
+        :param params: Request parameters
+        """
 
         self.url = url
         self.method = method
-        self.port = 80
+        self.port = 80  # Default port
         self.headers = headers
         self.params = params
 
@@ -18,6 +39,13 @@ class HTTPRequest:
         self.__parse_request()
 
     def __parse_request(self):
+
+        """
+        Method to parse info to make a request. From the info obtained when constructing the object, some
+        validations will be made, the URL will be parsed and the info to make an HTTP request will be
+        organized.
+        :return: None
+        """
 
         try:
             self.__validate_request()
@@ -41,6 +69,12 @@ class HTTPRequest:
 
     def __validate_request(self):
 
+        """
+        Method to validate information initialized to make a request
+        In case of error, an exception will be raised
+        :return: None
+        """
+
         if self.url is None or len(self.url) == 0:
             raise ValueError("Invalid URL")
 
@@ -58,10 +92,16 @@ class HTTPRequest:
 
     def format_request(self):
 
+        """
+        Method to format the request in a specific string for sending using TCP sockets
+        :return: String containing the formatted request
+        """
+
         complete_uri = self.doc_path
         if self.method.upper() == "GET":
             complete_uri = "%s?%s" % (self.doc_path, self.query)
 
+        # HTTP version 1.0 is used by default
         request_line = "%s %s HTTP/1.0" % (self.method, complete_uri)
 
         header_lines = "Host: %s\r\n" % self.host

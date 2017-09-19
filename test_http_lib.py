@@ -1,3 +1,11 @@
+"""
+test_http_lib.py
+Script to test the HTTP Client library that uses TCP sockets. A GET and a POST request is made.
+"""
+
+__author__ = "Celine Mikiel Yohann"
+__id__ = "40009948"
+
 import http_lib
 
 if __name__ == "__main__":
