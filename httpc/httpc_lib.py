@@ -1,11 +1,10 @@
 import argparse
 
+from httpc import http_lib
+
 
 def main():
-    parent_parser = argparse.ArgumentParser(
-        description='httpc is a curl-like application but supports HTTP protocol only',
-        prog='httpc', add_help=False,
-        usage='%(prog)s (help|get|post) [-v] [-h k:v]* [-d inline-data] [-f file] URL')
+    parent_parser = argparse.ArgumentParser(prog='httpc', add_help=False)
 
     parser = argparse.ArgumentParser(add_help=False)
     subparsers = parser.add_subparsers()
@@ -13,35 +12,26 @@ def main():
     # HTTP GET Request subcommand
     parser_get = subparsers.add_parser('get', parents=[parent_parser], add_help=False)
     parser_get.set_defaults(func=get_request)
-    parser_get.add_argument('url', metavar="URL", nargs=1)
-    parser_get.add_argument('-v', dest="verbose", help="Prints the detail of the response such as protocol, status, "
-                                                       "and headers.",
-                            action="store_true")
-    parser_get.add_argument('-h', dest="header", type=str, help="Associates headers to HTTP Request with the format "
-                                                                "'key:value'.",
-                            metavar="key:value", action="append")
+    parser_get.add_argument('url', metavar="URL")
+    parser_get.add_argument('-v', dest="verbose", action="store_true")
+    parser_get.add_argument('-h', dest="headers", type=str, metavar="key:value", action="append")
 
     # HTTP POST Request subcommand
     parser_post = subparsers.add_parser('post', parents=[parent_parser], add_help=False)
+
     parser_post.set_defaults(func=post_request)
-    parser_post.add_argument('url', metavar="URL", nargs=1)
-    parser_post.add_argument('-v', dest="verbose", help="Prints the detail of the response such as protocol, status, "
-                                                        "and headers.",
-                             action="store_true")
-    parser_post.add_argument('-h', dest="header", type=str, help="Associates headers to HTTP Request with the format "
-                                                                 "'key:value'.",
-                             metavar="key:value", action="append")
+    parser_post.add_argument('url', metavar="URL")
+    parser_post.add_argument('-v', dest="verbose", action="store_true")
+    parser_post.add_argument('-h', dest="headers", type=str, metavar="key:value", action="append")
+
     body_group = parser_post.add_mutually_exclusive_group()
-    body_group.add_argument('-d', dest="data", type=str, help="Associates an inline data to the body HTTP POST request.",
-                            metavar="string")
-    body_group.add_argument('-f', dest="file", type=str, help="Associates the content of a file to the body HTTP POST "
-                                                              "request.",
-                            metavar="file")
+    body_group.add_argument('-d', dest="data", type=str, metavar="string")
+    body_group.add_argument('-f', dest="file", type=str, metavar="file")
 
     # Help subcommand
     help_parser = subparsers.add_parser('help', parents=[parent_parser], add_help=False)
     help_parser.set_defaults(func=show_help)
-    help_parser.add_argument('command', nargs=1, type=str, help='command')
+    help_parser.add_argument('command', nargs="*", type=str)
 
     try:
         args = parser.parse_args()
@@ -100,12 +90,61 @@ def show_help(args):
 
 
 def get_request(args):
+    try:
 
-    print(args)
+        url = args.url
+        verbose = args.verbose
+        headers = args.headers
+
+        response = http_lib.get(url=url, headers=headers)
+        if response:
+            if verbose:
+                print(response.status)
+                print(response.get_headers_str())
+            print(response.body)
+
+    except AttributeError:
+        print("usage: httpc get [-v] [-h key:value] URL")
+        print("httpc Error: Arguments missing or not entered correctly'")
 
 
 def post_request(args):
-    print(args)
+    try:
+
+        url = args.url
+        verbose = args.verbose
+        headers = args.headers
+        data = args.data
+        file = args.file
+
+    except AttributeError:
+        print("usage: httpc get [-v] [-h key:value] URL")
+        print("httpc Error: Arguments missing or not entered correctly'")
+
+    else:
+
+        correct_params = True
+        params = ""
+        if data is not None and file is None:
+            params = data
+        elif file is not None and data is None:
+            try:
+                with open(file, 'r') as data_file:
+                    params = data_file.readlines()
+            except (OSError, IOError):
+                print("Unable to read data from file. Check file and try again")
+                correct_params = False
+        elif data is not None and file is not None:
+            correct_params = False
+            print("Cannot have inline data and file data at the same time")
+
+        if correct_params:
+            response = http_lib.post(url=url, headers=headers, params=params)
+            if response:
+                if verbose:
+                    print(response.status)
+                    print(response.get_headers_str())
+                print(response.body)
 
 
 if __name__ == "__main__":
