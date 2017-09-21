@@ -30,11 +30,13 @@ def get(url, headers=None):
 def post(url, params, headers=None):
     request = HTTPRequest(url=url, method="POST", headers=headers, params=params)
 
-    socket_clt = SocketClient(request)
-
-    response = socket_clt.send_request()
-
-    if not response:
-        print("Request not sent")
+    try:
+        socket_clt = SocketClient(request)
+    except Exception:
+        raise
     else:
-        return response
+        response = socket_clt.send_request()
+        if not response:
+            print("Request not sent")
+        else:
+            return response

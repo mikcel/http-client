@@ -66,13 +66,18 @@ class HTTPRequest:
             self.port = 80
 
         self.doc_path = parsed_url.path
+        if len(self.doc_path) == 0:
+            self.doc_path = "/"
+
         self.query = parsed_url.query
 
         if self.method.upper() == "POST" and len(self.params) > 0:
             content_len_regexp = re.compile("content-length:\s?\d", re.IGNORECASE)
             # Check that content-length was added, if not add it automatically
-            if len(list(filter(content_len_regexp.match, self.headers))) == 0:
-                self.headers.append("Content-Length:%s" % len(self.params))
+            if self.headers is not None and len(list(filter(content_len_regexp.match, self.headers))) == 0:
+                self.headers.append("Content-Length: %s" % len(self.params))
+            elif self.headers is None:
+                self.headers = ["Content-Length: %s" % len(self.params), "Content-Type:application/json"]
 
     def __validate_request(self):
 
@@ -118,8 +123,6 @@ class HTTPRequest:
 
         formatted_request = "%s" \
                             "\r\n%s" \
-                            "Connection: close\r\n" \
-                            "\r\n" % (request_line, header_lines)
+                            "Connection: close\r\n\r\n" % (request_line, header_lines)
 
-        print(formatted_request)
         return formatted_request

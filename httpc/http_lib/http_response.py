@@ -24,7 +24,9 @@ class HTTPResponse:
         """
 
         self.raw_response = response_str
-        self.status = ""
+        self.status_line = ""
+        self.status_code = ""
+        self.status_code_desc = ""
         self.headers = OrderedDict()
         self.body = ""
 
@@ -41,7 +43,13 @@ class HTTPResponse:
 
         try:
 
-            self.status = split_response[0]
+            # Split the status line to get status code and description
+            self.status_line = split_response[0]
+            status_line_regexp = re.compile("HTTP\/\d\.\d\s((?P<code>\d{3})\s(?P<desc>.*))", re.IGNORECASE)
+            status_split = re.match(status_line_regexp, self.status_line)
+            if status_split is not None and len(status_split.groupdict()) == 2:
+                self.status_code = int(status_split.groupdict().get("code"))
+                self.status_code_desc = status_split.groupdict().get("desc")
 
             # Get all headers until a return line feed is reached
             list_idx = 1

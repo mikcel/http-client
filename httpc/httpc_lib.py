@@ -1,5 +1,4 @@
 import argparse
-
 from httpc import http_lib
 
 
@@ -39,6 +38,7 @@ def main():
     except AttributeError:
         print("usage: httpc (help|get|post)")
         print("httpc Error: Missing subcommands")
+        exit(1)
 
 
 def show_help(args):
@@ -96,16 +96,27 @@ def get_request(args):
         verbose = args.verbose
         headers = args.headers
 
-        response = http_lib.get(url=url, headers=headers)
-        if response:
-            if verbose:
-                print(response.status)
-                print(response.get_headers_str())
-            print(response.body)
+        try:
+            response = http_lib.get(url=url, headers=headers)
+        except Exception as e:
+            print(e)
+        else:
+            if response is not None:
+                if response.status_code is None or response.status_code == 200:
+                    if verbose:
+                        print(response.status_line)
+                        print(response.get_headers_str())
+                    print(response.body)
+                else:
+                    print("Response Status: %s %s" % (response.status_code, response.status_code_desc))
+                    if verbose:
+                        print(response.status_line)
+                        print(response.get_headers_str())
 
     except AttributeError:
         print("usage: httpc get [-v] [-h key:value] URL")
         print("httpc Error: Arguments missing or not entered correctly'")
+        exit(1)
 
 
 def post_request(args):
@@ -120,6 +131,7 @@ def post_request(args):
     except AttributeError:
         print("usage: httpc get [-v] [-h key:value] URL")
         print("httpc Error: Arguments missing or not entered correctly'")
+        exit(1)
 
     else:
 
@@ -130,7 +142,7 @@ def post_request(args):
         elif file is not None and data is None:
             try:
                 with open(file, 'r') as data_file:
-                    params = data_file.readlines()
+                    params = data_file.read()
             except (OSError, IOError):
                 print("Unable to read data from file. Check file and try again")
                 correct_params = False
@@ -139,12 +151,22 @@ def post_request(args):
             print("Cannot have inline data and file data at the same time")
 
         if correct_params:
-            response = http_lib.post(url=url, headers=headers, params=params)
-            if response:
-                if verbose:
-                    print(response.status)
-                    print(response.get_headers_str())
-                print(response.body)
+            try:
+                response = http_lib.post(url=url, headers=headers, params=params)
+            except Exception as e:
+                print(e)
+            else:
+                if response is not None:
+                    if response.status_code is None or response.status_code == 200:
+                        if verbose:
+                            print(response.status_line)
+                            print(response.get_headers_str())
+                        print(response.body)
+                    else:
+                        print("Response Status: %s %s" % (response.status_code, response.status_code_desc))
+                        if verbose:
+                            print(response.status_line)
+                            print(response.get_headers_str())
 
 
 if __name__ == "__main__":
