@@ -1,15 +1,18 @@
-missing module named 'org.python' - imported by pickle, /home/mik-ds/COMP445/lab1/httpc/httpc_lib.py, xml.sax
-excluded module named _frozen_importlib - imported by importlib, importlib.abc, /home/mik-ds/COMP445/lab1/httpc/httpc_lib.py
-missing module named _frozen_importlib_external - imported by importlib._bootstrap, importlib, importlib.abc, /home/mik-ds/COMP445/lab1/httpc/httpc_lib.py
-missing module named _winreg - imported by platform, /home/mik-ds/COMP445/lab1/httpc/httpc_lib.py
+missing module named resource - imported by posix, C:\Users\mikce_000\Desktop\COMP 445\Lab assignment\Lab1\http-client\httpc\httpc_lib.py
+missing module named posix - imported by os, C:\Users\mikce_000\Desktop\COMP 445\Lab assignment\Lab1\http-client\httpc\httpc_lib.py
+missing module named _posixsubprocess - imported by subprocess, C:\Users\mikce_000\Desktop\COMP 445\Lab assignment\Lab1\http-client\httpc\httpc_lib.py
+missing module named 'org.python' - imported by pickle, C:\Users\mikce_000\Desktop\COMP 445\Lab assignment\Lab1\http-client\httpc\httpc_lib.py, xml.sax
+missing module named readline - imported by cmd, code, pdb, C:\Users\mikce_000\Desktop\COMP 445\Lab assignment\Lab1\http-client\httpc\httpc_lib.py
+excluded module named _frozen_importlib - imported by importlib, importlib.abc, C:\Users\mikce_000\Desktop\COMP 445\Lab assignment\Lab1\http-client\httpc\httpc_lib.py
+missing module named _frozen_importlib_external - imported by importlib._bootstrap, importlib, importlib.abc, C:\Users\mikce_000\Desktop\COMP 445\Lab assignment\Lab1\http-client\httpc\httpc_lib.py
+missing module named _winreg - imported by platform, C:\Users\mikce_000\Desktop\COMP 445\Lab assignment\Lab1\http-client\httpc\httpc_lib.py
 missing module named _scproxy - imported by urllib.request
-missing module named java - imported by platform, /home/mik-ds/COMP445/lab1/httpc/httpc_lib.py
-missing module named 'java.lang' - imported by platform, /home/mik-ds/COMP445/lab1/httpc/httpc_lib.py, xml.sax._exceptions
-missing module named vms_lib - imported by platform, /home/mik-ds/COMP445/lab1/httpc/httpc_lib.py
-missing module named winreg - imported by platform, mimetypes, /home/mik-ds/COMP445/lab1/httpc/httpc_lib.py, urllib.request
-missing module named nt - imported by os, ntpath, shutil, /home/mik-ds/COMP445/lab1/httpc/httpc_lib.py
-missing module named ce - imported by os, /home/mik-ds/COMP445/lab1/httpc/httpc_lib.py
-missing module named msvcrt - imported by subprocess, /home/mik-ds/COMP445/lab1/httpc/httpc_lib.py, getpass
-missing module named _winapi - imported by subprocess, /home/mik-ds/COMP445/lab1/httpc/httpc_lib.py
-missing module named _dummy_threading - imported by dummy_threading, /home/mik-ds/COMP445/lab1/httpc/httpc_lib.py
-missing module named org - imported by copy, /home/mik-ds/COMP445/lab1/httpc/httpc_lib.py
+missing module named java - imported by platform, C:\Users\mikce_000\Desktop\COMP 445\Lab assignment\Lab1\http-client\httpc\httpc_lib.py
+missing module named 'java.lang' - imported by platform, C:\Users\mikce_000\Desktop\COMP 445\Lab assignment\Lab1\http-client\httpc\httpc_lib.py, xml.sax._exceptions
+missing module named vms_lib - imported by platform, C:\Users\mikce_000\Desktop\COMP 445\Lab assignment\Lab1\http-client\httpc\httpc_lib.py
+missing module named termios - imported by tty, C:\Users\mikce_000\Desktop\COMP 445\Lab assignment\Lab1\http-client\httpc\httpc_lib.py, getpass
+missing module named grp - imported by tarfile, shutil, C:\Users\mikce_000\Desktop\COMP 445\Lab assignment\Lab1\http-client\httpc\httpc_lib.py
+missing module named org - imported by copy, C:\Users\mikce_000\Desktop\COMP 445\Lab assignment\Lab1\http-client\httpc\httpc_lib.py
+missing module named pwd - imported by posixpath, tarfile, shutil, http.server, webbrowser, C:\Users\mikce_000\Desktop\COMP 445\Lab assignment\Lab1\http-client\httpc\httpc_lib.py, netrc, getpass
+missing module named ce - imported by os, C:\Users\mikce_000\Desktop\COMP 445\Lab assignment\Lab1\http-client\httpc\httpc_lib.py
+missing module named _dummy_threading - imported by dummy_threading, C:\Users\mikce_000\Desktop\COMP 445\Lab assignment\Lab1\http-client\httpc\httpc_lib.py
