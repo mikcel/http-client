@@ -1,4 +1,5 @@
 import argparse
+import sys
 from httpc import http_lib
 
 
@@ -38,7 +39,7 @@ def main():
     except AttributeError:
         print("usage: httpc (help|get|post)")
         print("httpc Error: Missing subcommands")
-        exit(1)
+        sys.exit(1)
 
 
 def show_help(args):
@@ -116,7 +117,7 @@ def get_request(args):
     except AttributeError:
         print("usage: httpc get [-v] [-h key:value] URL")
         print("httpc Error: Arguments missing or not entered correctly'")
-        exit(1)
+        sys.exit(1)
 
 
 def post_request(args):
@@ -131,7 +132,7 @@ def post_request(args):
     except AttributeError:
         print("usage: httpc get [-v] [-h key:value] URL")
         print("httpc Error: Arguments missing or not entered correctly'")
-        exit(1)
+        sys.exit(1)
 
     else:
 
