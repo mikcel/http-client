@@ -71,7 +71,7 @@ class HTTPRequest:
 
         self.query = parsed_url.query
 
-        if self.method.upper() == "POST" and len(self.params) > 0:
+        if self.method.upper() == "POST" and self.params and len(self.params) > 0:
             content_len_regexp = re.compile("content-length:\s?\d", re.IGNORECASE)
             # Check that content-length was added, if not add it automatically
             if self.headers is not None and len(list(filter(content_len_regexp.match, self.headers))) == 0:
@@ -90,7 +90,7 @@ class HTTPRequest:
         if self.url is None or len(self.url) == 0:
             raise ValueError("Invalid URL")
 
-        if not self.url.startswith("http") or self.url.startswith("https"):
+        if not self.url.startswith("http") and self.url.startswith("https"):
             raise ValueError("Invalid URL. Only HTTP request.")
 
         if type(self.method) is not str or self.method.upper() not in ("GET", "POST"):

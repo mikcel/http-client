@@ -104,15 +104,10 @@ def get_request(args):
         else:
             if response is not None:
                 if response.status_code is None or response.status_code == 200:
-                    if verbose:
-                        print(response.status_line)
-                        print(response.get_headers_str())
-                    print(response.body)
+                    __format_printing(verbose=verbose, response=response)
                 else:
                     print("Response Status: %s %s" % (response.status_code, response.status_code_desc))
-                    if verbose:
-                        print(response.status_line)
-                        print(response.get_headers_str())
+                    __format_printing(verbose=verbose, response=response, print_body=False)
 
     except AttributeError:
         print("usage: httpc get [-v] [-h key:value] URL")
@@ -159,15 +154,20 @@ def post_request(args):
             else:
                 if response is not None:
                     if response.status_code is None or response.status_code == 200:
-                        if verbose:
-                            print(response.status_line)
-                            print(response.get_headers_str())
-                        print(response.body)
+                        __format_printing(verbose=verbose, response=response)
                     else:
                         print("Response Status: %s %s" % (response.status_code, response.status_code_desc))
-                        if verbose:
-                            print(response.status_line)
-                            print(response.get_headers_str())
+                        __format_printing(verbose=verbose, response=response, print_body=False)
+
+
+def __format_printing(response, verbose, print_body=True):
+
+    if verbose:
+        print(response.status_line)
+        print(response.get_headers_str())
+
+    if print_body:
+        print(response.body)
 
 
 if __name__ == "__main__":
