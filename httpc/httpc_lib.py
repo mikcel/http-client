@@ -15,6 +15,7 @@ def main():
     parser_get.add_argument('url', metavar="URL")
     parser_get.add_argument('-v', dest="verbose", action="store_true")
     parser_get.add_argument('-h', dest="headers", type=str, metavar="key:value", action="append")
+    parser_get.add_argument('-o', dest="outputfile", type=str, metavar="file")
 
     # HTTP POST Request subcommand
     parser_post = subparsers.add_parser('post', parents=[parent_parser], add_help=False)
@@ -23,6 +24,7 @@ def main():
     parser_post.add_argument('url', metavar="URL")
     parser_post.add_argument('-v', dest="verbose", action="store_true")
     parser_post.add_argument('-h', dest="headers", type=str, metavar="key:value", action="append")
+    parser_post.add_argument('-o', dest="outputfile", type=str, metavar="file")
 
     body_group = parser_post.add_mutually_exclusive_group()
     body_group.add_argument('-d', dest="data", type=str, metavar="string")
@@ -59,6 +61,7 @@ def show_help(args):
     Get executes a HTTP GET request for a given URL.\r\n
     \t-v Prints the detail of the response such as protocol, status, and headers.\r
     \t-h key:value Associates headers to HTTP Request with the format 'key:value'.
+    \t-o file_name Saves response in a specified file_name.
     """
 
     post_request_help = """
@@ -68,6 +71,7 @@ def show_help(args):
     \t-h key:value Associates headers to HTTP Request with the format 'key:value'.\r 
     \t-d string Associates an inline data to the body HTTP POST request.\r
     \t-f file Associates the content of a file to the body HTTP POST request.\r\n
+    \t-o file_name Saves response in a specified file_name.\r\n
     Either [-d] or [-f] can be used but not both.
     """
     help_usage = "usage: httpc help [get|post]"
@@ -97,6 +101,9 @@ def get_request(args):
         verbose = args.verbose
         headers = args.headers
 
+        if args.outputfile:
+            __set_output_file(args.outputfile)
+
         try:
             response = http_lib.get(url=url, headers=headers)
         except Exception as e:
@@ -123,6 +130,9 @@ def post_request(args):
         headers = args.headers
         data = args.data
         file = args.file
+
+        if args.outputfile:
+            __set_output_file(args.outputfile)
 
     except AttributeError:
         print("usage: httpc get [-v] [-h key:value] URL")
@@ -168,6 +178,15 @@ def __format_printing(response, verbose, print_body=True):
 
     if print_body:
         print(response.body)
+
+
+def __set_output_file(file_path):
+
+    try:
+        sys.stdout = open(file_path, 'w+')
+    except (IOError, OSError) as e:
+        print("Error opening output file: %s" % e)
+        sys.exit(1)
 
 
 if __name__ == "__main__":
