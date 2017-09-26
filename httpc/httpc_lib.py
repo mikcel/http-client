@@ -1,9 +1,19 @@
+"""
+httpc_lib.py
+Script that is used from command-line interface to make HTTP POST and GET requests by passing paramaters.
+Based on options entered and parameters received, the script will take appropriate action
+"""
 import argparse
 import sys
 from httpc import http_lib
 
 
 def main():
+    """
+    Main function called when script is run. Expect that arguments were received. Uses a parser for the
+    command line arguments
+    :return: None
+    """
     parent_parser = argparse.ArgumentParser(prog='httpc', add_help=False)
 
     parser = argparse.ArgumentParser(add_help=False)
@@ -45,6 +55,12 @@ def main():
 
 
 def show_help(args):
+    """
+    Method to print the help messages to the screen depending on the command entered
+    :param args: Namespace resulted from arguments parsing
+    :return: None
+    """
+
     generic_help = """
     httpc is a curl-like application but supports HTTP protocol only.\r
     Usage: \r
@@ -76,12 +92,14 @@ def show_help(args):
     """
     help_usage = "usage: httpc help [get|post]"
 
+    # Check command format and keyword entered
     if args is None or not hasattr(args, "command"):
         print(help_usage)
         print("httpc Error: Error parsing subcommand")
     elif len(args.command) == 0:
         print(generic_help)
     elif len(args.command) == 1:
+        # Show help messages for get and post respectively
         if args.command[0] == "get":
             print(get_request_help)
         elif args.command[0] == "post":
@@ -95,12 +113,21 @@ def show_help(args):
 
 
 def get_request(args):
+    """
+    Method to perform get requests. Called by argument parser if get command was entered. It will
+    extract information from the command and perform a get request accordingly
+    :param args: Namespace resulted from arguments parsing
+    :return: None
+    """
+
     try:
 
+        # Extract important info from the command
         url = args.url
         verbose = args.verbose
         headers = args.headers
 
+        # Check if output to file needed
         if args.outputfile:
             __set_output_file(args.outputfile)
 
@@ -109,6 +136,7 @@ def get_request(args):
         except Exception as e:
             print(e)
         else:
+            # Check response and print appropriate message
             if response is not None:
                 if response.status_code is None or response.status_code == 200:
                     __format_printing(verbose=verbose, response=response)
@@ -123,6 +151,13 @@ def get_request(args):
 
 
 def post_request(args):
+    """
+    Method to perform post requests. Called by argument parser if get command was entered. It will
+    extract information from the command and perform a post request accordingly
+    :param args: Namespace resulted from arguments parsing
+    :return: None
+    """
+
     try:
 
         url = args.url
@@ -171,6 +206,13 @@ def post_request(args):
 
 
 def __format_printing(response, verbose, print_body=True):
+    """
+    Method to format the printing of the messages.
+    :param response: Response object after making request
+    :param verbose: Boolean. True to show headers, otherwise only body
+    :param print_body: If body is still needed to be printed (If request failed)
+    :return:
+    """
 
     if verbose:
         print(response.status_line)
@@ -181,6 +223,12 @@ def __format_printing(response, verbose, print_body=True):
 
 
 def __set_output_file(file_path):
+
+    """
+    Method to redirect the stdout to a file
+    :param file_path: The path of the file to store the print messages
+    :return: None
+    """
 
     try:
         sys.stdout = open(file_path, 'w+')
