@@ -5,6 +5,9 @@ Based on options entered and parameters received, the script will take appropria
 """
 import argparse
 import sys
+
+sys.path.append("../")
+
 from httpc import http_lib
 
 
