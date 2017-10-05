@@ -7,7 +7,7 @@ __author__ = "Celine Mikiel Yohann"
 __id__ = "40009948"
 
 import time
-from http_lib.socket_client import SocketClient
+from httpc.http_lib.socket_client import SocketClient
 from httpc.http_lib.http_request import HTTPRequest
 
 

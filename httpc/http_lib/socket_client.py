@@ -10,7 +10,7 @@ __id__ = "40009948"
 
 import socket
 
-from http_lib.http_response import HTTPResponse
+from httpc.http_lib.http_response import HTTPResponse
 from httpc.http_lib.http_request import HTTPRequest
 
 
