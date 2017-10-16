@@ -46,7 +46,7 @@ class SocketClient(object):
         Method to connect to a socket on a host
         """
         try:
-            self.socket.connect((self.request.host, self.request.port))
+            self.socket.connect((self.request.host, int(self.request.port)))
         except socket.gaierror:
             raise socket.gaierror("Socket connection could not be established")
         except socket.timeout:
@@ -96,7 +96,7 @@ class SocketClient(object):
                 returned_data = self.socket.recv(len(self.last_sent_request), socket.MSG_WAITALL)
             except socket.timeout:
                 print("Unable to read response from host. Timed out.")
-                return None
+                break
 
             if not returned_data:
                 break

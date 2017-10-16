@@ -81,6 +81,8 @@ def __make_request(url, headers, method, params=None, max_redirect=4):
                         url = "http://%s%s" % (request.host, new_location)
 
                     redirect_count += 1
+                    print(response.status_line)
+                    print(response.get_headers_str())
                     print("Redirecting to: %s\r" % url)
 
                     # Sleep before redirection
